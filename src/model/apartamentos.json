@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "referencia": "Avenida",
+    "endereco": "Avenida 1, Bairro, Cidade/UF",
+    "bairro": "Ipanema",
+    "quartos": 3,
+    "banheiros": 2,
+    "metragem": 100
+  },
+  {
+    "id": "2",
+    "referencia": "Rua",
+    "endereco": "Rua 1, Bairro, Cidade/UF",
+    "bairro": "Lagoa",
+    "quartos": 2,
+    "banheiros": 2,
+    "metragem": 80
+  }
+]
