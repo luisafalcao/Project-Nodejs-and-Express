@@ -23,4 +23,4 @@ const excluirBairro = (req, res) => {
     res.status(200).json({ message: 'Bairro excluído' })
 }
 
-export default { getBairros, adicionarBairro, excluirBairro }
+export default { bairros, getBairros, adicionarBairro, excluirBairro }
