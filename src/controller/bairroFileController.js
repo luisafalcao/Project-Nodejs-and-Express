@@ -8,6 +8,7 @@ import validarApartamento from '../model/apartamentoModel.js';
 
 const fileName = fileURLToPath(import.meta.url)
 const _dirname = dirname(fileName)
+// const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const apartamentosFilePath = path.join(_dirname, '../model/apartamentos.json');
 
 // LISTAR APARTAMENTOS
@@ -80,48 +81,5 @@ const adicionarApartamento = (req, res) => {
         .then(novoApartamento => res.status(200).json(novoApartamento))
         .catch(err => res.status(500).send(err.message))
 }
+export default { getApartamentos, adicionarApartamento }
 
-// EDITAR APARTAMENTOS
-function editarApartamentoPromise(id, apartamento) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(apartamentosFilePath, 'utf8', (err, data) => {
-            if (err) {
-                reject(err)
-            } else {
-                let apartamentos = JSON.parse(data)
-
-                const index = apartamentos.findIndex(e => e.id === id)
-
-                if (index === -1) {
-                    reject(new Error('Apartamento não encontrado'))
-                } else {
-                    const apartamentoEdicao = {
-                        ...apartamentos[index],
-                        ...apartamento,
-                        referencia: apartamentos[index].referencia
-                    }
-                    apartamentos[index] = apartamentoEdicao
-
-                    fs.writeFile(apartamentosFilePath, JSON.stringify(apartamentos), (err) => {
-                        if (err) {
-                            reject(err)
-                        } else {
-                            resolve(apartamentoEdicao)
-                        }
-                    })
-                }
-            }
-        })
-    })
-}
-
-const editarApartamento = (req, res) => {
-    const id = req.params.id
-    const apartamento = req.body
-
-    editarApartamentoPromise(id, apartamento)
-        .then(apartamentoEdicao => res.status(200).json(apartamentoEdicao))
-        .catch(err => res.status(500).send(err.message))
-}
-
-export default { getApartamentos, adicionarApartamento, editarApartamento }

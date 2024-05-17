@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/', apartamentoController.getApartamentos)
 router.post('/adicionar', apartamentoController.adicionarApartamento)
-// router.put('/:id', apartamentoController.editarApartamento)
+router.put('/:id', apartamentoController.editarApartamento)
 // router.delete('/:id', apartamentoController.excluirApartamento)
 
 export default router
