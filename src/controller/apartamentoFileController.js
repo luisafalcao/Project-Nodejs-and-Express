@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import bairroController from './bairroController.js'
 import validarApartamento from '../model/apartamentoModel.js';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const apartamentosFilePath = path.join(__dirname, '../model/apartamentos.json');
+const fileName = fileURLToPath(import.meta.url)
+const _dirname = dirname(fileName)
+// const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const apartamentosFilePath = path.join(_dirname, '../model/apartamentos.json');
 
 // LISTAR APARTAMENTOS
 function getApartamentosPromise() {
