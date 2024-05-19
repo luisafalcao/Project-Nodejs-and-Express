@@ -124,4 +124,43 @@ const editarApartamento = (req, res) => {
         .catch(err => res.status(500).send(err.message))
 }
 
-export default { getApartamentos, adicionarApartamento, editarApartamento }
+
+// DELETAR APARTAMENTOS
+function removerApartamentoPromise(id) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(apartamentosFilePath, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                let apartamentos = JSON.parse(data)
+
+                const index = apartamentos.findIndex(e => e.id === id)
+
+                if (index === -1) {
+                    reject(new Error('Apartamento não encontrado'))
+                } else {
+                    apartamentos.splice(index, 1)
+
+                    fs.writeFile(apartamentosFilePath, JSON.stringify(apartamentos), (err) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
+
+            }
+        })
+    })
+}
+
+const removerApartamento = (req, res) => {
+    const id = req.params.id
+
+    removerApartamentoPromise(id)
+        .then(() => res.status(200).json({ message: 'Apartamento removido' }))
+        .catch(err => res.status(500).send(err.message))
+}
+
+export default { getApartamentos, adicionarApartamento, editarApartamento, removerApartamento }
