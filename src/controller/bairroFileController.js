@@ -3,83 +3,157 @@ import fs from 'fs';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import bairroController from './bairroController.js'
-import validarApartamento from '../model/apartamentoModel.js';
+import validarBairro from '../model/bairroModel.js';
 
 const fileName = fileURLToPath(import.meta.url)
 const _dirname = dirname(fileName)
-// const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const apartamentosFilePath = path.join(_dirname, '../model/apartamentos.json');
+const bairrosFilePath = path.join(_dirname, '../model/bairros.json');
 
-// LISTAR APARTAMENTOS
-function getApartamentosPromise() {
+// LISTAR BAIRROS
+function getBairrosPromise() {
     return new Promise((resolve, reject) => {
-        fs.readFile(apartamentosFilePath, 'utf8', (err, data) => {
+        fs.readFile(bairrosFilePath, 'utf8', (err, data) => {
             if (err) {
                 reject(err)
             } else {
-                let apartamentos = JSON.parse(data)
-                resolve(apartamentos)
+                let bairros = JSON.parse(data)
+                resolve(bairros)
             }
         })
     })
 }
 
-const getApartamentos = (req, res) => {
-    getApartamentosPromise()
-        .then(apartamentos => res.status(200).json(apartamentos))
+const getBairros = (req, res) => {
+    getBairrosPromise()
+        .then(bairros => res.status(200).json(bairros))
         .catch(err => res.status(500).send(err.message))
 }
 
-// ADICIONAR APARTAMENTO
-function adicionarApartamentoPromise(apartamento) {
+// ADICIONAR BAIRRO
+function adicionarBairroPromise(bairro) {
     return new Promise((resolve, reject) => {
-        fs.readFile(apartamentosFilePath, 'utf8', (err, data) => {
+        fs.readFile(bairrosFilePath, 'utf8', (err, data) => {
             if (err) {
                 reject(err);
             } else {
-                let apartamentos = JSON.parse(data)
+                let bairros = JSON.parse(data)
 
-                if (apartamentos.some(ap => ap.referencia === apartamento.referencia)) {
-                    reject(new Error('Apartamento já existe'))
-                }
-
-                const id = uuidv4()
-                const novoApartamento = {
-                    id,
-                    ...apartamento
-                }
-
-                apartamentos.push(novoApartamento)
-
-                fs.writeFile(apartamentosFilePath, JSON.stringify(apartamentos), (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(novoApartamento);
+                if (bairros.some((ap) => ap.nome === bairro.nome) && bairros.some((ap) => ap.cidade === bairro.cidade)) {
+                    reject(new Error('Bairro já existe'))
+                } else {
+                    const id = uuidv4()
+                    const novoBairro = {
+                        id,
+                        ...bairro
                     }
-                })
+
+                    bairros.push(novoBairro)
+                    fs.writeFile(bairrosFilePath, JSON.stringify(bairros), (err) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(novoBairro);
+                        }
+                    })
+                }
             }
         })
     })
 }
 
-const adicionarApartamento = (req, res) => {
-    const apartamento = req.body
+const adicionarBairro = (req, res) => {
+    const bairro = req.body
 
-    const validador = validarApartamento(apartamento)
+    const validador = validarBairro(bairro)
 
     if (!validador.valid) {
         return res.status(400).json({ message: 'Dados inválidos', errors: validador.errors })
+    } else {
+        adicionarBairroPromise(bairro)
+            .then(novoBairro => res.status(200).json(novoBairro))
+            .catch(err => res.status(500).send(err.message))
     }
+}
 
-    if (!bairroController.bairros.includes(apartamento.bairro)) {
-        return res.status(404).json({ message: 'Bairro não existe' })
-    }
+// EDITAR BAIRROS
+function editarBairroPromise(id, bairro) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(bairrosFilePath, 'utf8', (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                let bairros = JSON.parse(data)
 
-    adicionarApartamentoPromise(apartamento)
-        .then(novoApartamento => res.status(200).json(novoApartamento))
+                const index = bairros.findIndex(e => e.id === id)
+
+                if (index === -1) {
+                    reject(new Error('Bairro não encontrado'))
+                } else {
+                    const bairroEdicao = {
+                        ...bairros[index],
+                        ...bairro
+                    }
+                    bairros[index] = bairroEdicao
+
+                    fs.writeFile(bairrosFilePath, JSON.stringify(bairros), (err) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(bairroEdicao)
+                        }
+                    })
+                }
+            }
+        })
+    })
+}
+
+const editarBairro = (req, res) => {
+    const id = req.params.id
+    const bairro = req.body
+
+    editarBairroPromise(id, bairro)
+        .then(bairroEdicao => res.status(200).json(bairroEdicao))
         .catch(err => res.status(500).send(err.message))
 }
-export default { getApartamentos, adicionarApartamento }
 
+
+// DELETAR BAIRROS
+function removerBairroPromise(id) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(bairrosFilePath, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                let bairros = JSON.parse(data)
+
+                const index = bairros.findIndex(e => e.id === id)
+
+                if (index === -1) {
+                    reject(new Error('Bairro não encontrado'))
+                } else {
+                    bairros.splice(index, 1)
+
+                    fs.writeFile(bairrosFilePath, JSON.stringify(bairros), (err) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
+
+            }
+        })
+    })
+}
+
+const removerBairro = (req, res) => {
+    const id = req.params.id
+
+    removerBairroPromise(id)
+        .then(() => res.status(200).json({ message: 'Bairro removido' }))
+        .catch(err => res.status(500).send(err.message))
+}
+
+export default { getBairros, adicionarBairro, editarBairro, removerBairro }

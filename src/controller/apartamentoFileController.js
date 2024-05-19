@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import bairroController from './bairroController.js'
 import validarApartamento from '../model/apartamentoModel.js';
+import bairroController from './zzzbairroController.js'
 
 const fileName = fileURLToPath(import.meta.url)
 const _dirname = dirname(fileName)
@@ -72,10 +72,6 @@ const adicionarApartamento = (req, res) => {
         return res.status(400).json({ message: 'Dados inválidos', errors: validador.errors })
     }
 
-    if (!bairroController.bairros.includes(apartamento.bairro)) {
-        return res.status(404).json({ message: 'Bairro não existe' })
-    }
-
     adicionarApartamentoPromise(apartamento)
         .then(novoApartamento => res.status(200).json(novoApartamento))
         .catch(err => res.status(500).send(err.message))
@@ -97,8 +93,7 @@ function editarApartamentoPromise(id, apartamento) {
                 } else {
                     const apartamentoEdicao = {
                         ...apartamentos[index],
-                        ...apartamento,
-                        referencia: apartamentos[index].referencia
+                        ...apartamento
                     }
                     apartamentos[index] = apartamentoEdicao
 

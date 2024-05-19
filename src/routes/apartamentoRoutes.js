@@ -1,6 +1,5 @@
 import express from "express";
 
-// import apartamentoController from "../controller/apartamentoController.js";
 import apartamentoController from "../controller/apartamentoFileController.js";
 
 const router = express.Router()
