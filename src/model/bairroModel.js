@@ -8,7 +8,7 @@ const bairroSchema = {
         nome: { type: "string" },
         cidade: { type: "string" },
     },
-    "required": ['nome']
+    // "required": ['nome']
 }
 
 const validarBairro = e => {

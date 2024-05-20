@@ -4,7 +4,6 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import validarApartamento from '../model/apartamentoModel.js';
-import bairroController from './zzzbairroController.js'
 
 const fileName = fileURLToPath(import.meta.url)
 const _dirname = dirname(fileName)
@@ -70,11 +69,12 @@ const adicionarApartamento = (req, res) => {
 
     if (!validador.valid) {
         return res.status(400).json({ message: 'Dados inválidos', errors: validador.errors })
+    } else {
+        adicionarApartamentoPromise(apartamento)
+            .then(novoApartamento => res.status(200).json(novoApartamento))
+            .catch(err => res.status(500).send(err.message))
     }
 
-    adicionarApartamentoPromise(apartamento)
-        .then(novoApartamento => res.status(200).json(novoApartamento))
-        .catch(err => res.status(500).send(err.message))
 }
 
 // EDITAR APARTAMENTOS

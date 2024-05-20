@@ -1,6 +1,6 @@
 import express from "express";
 
-import bairroController from "../controller/bairroFileController.js";
+import bairroController from "../controller/bairroController.js";
 
 const router = express.Router()
 
