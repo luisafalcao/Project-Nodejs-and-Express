@@ -9,12 +9,14 @@ const app = express();
 const host = "127.0.0.1"
 const port = 3000
 
+app.use(cors())
+
 app.use(express.json());
 app.use('/apartamentos', apartamentoRoutes)
 app.use('/bairros', bairroRoutes)
 
 app.get("/", (req, res) => {
-    res.status(200).send("Curso de Node.js")
+    res.status(200).send("Node.js")
 })
 
 app.listen(port, host, () => {

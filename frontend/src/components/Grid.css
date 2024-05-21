@@ -1,0 +1,19 @@
+.apartamento-grid {
+  color: black;
+  text-align: left;
+  padding: 20px;
+}
+
+.apartamento:not(:last-child) {
+  margin-bottom: 40px;
+}
+
+.apartamento hr {
+  margin-top: 40px;
+}
+
+.icon-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}

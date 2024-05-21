@@ -8,11 +8,12 @@ const apartamentoSchema = {
         referencia: { type: "string" },
         endereco: { type: "string" },
         bairro: { type: "string" },
-        quartos: { type: "number" },
-        banheiros: { type: "number" },
-        metragem: { type: "number" }
-    },
-    "required": ['referencia', 'endereco', 'bairro']
+        cidade: { type: "string" },
+        cep: { type: "string" },
+        quartos: { type: "string" },
+        banheiros: { type: "string" },
+        metragem: { type: "string" }
+    }
 }
 
 const validarApartamento = e => {
